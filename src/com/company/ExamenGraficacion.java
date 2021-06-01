@@ -3,10 +3,7 @@ package com.company;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.Camera;
-import javafx.scene.Group;
-import javafx.scene.PerspectiveCamera;
-import javafx.scene.Scene;
+import javafx.scene.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
@@ -16,6 +13,7 @@ import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
 public class ExamenGraficacion extends Application {
@@ -42,6 +40,7 @@ public class ExamenGraficacion extends Application {
         grupo.getChildren().add(poste2);
         grupo.getChildren().add(poste3);
         grupo.getChildren().add(balon);
+        grupo.getChildren().addAll(lightEffect());
 
         //Creando la cámara de perspectiva
         Camera camara = new PerspectiveCamera();
@@ -72,6 +71,15 @@ public class ExamenGraficacion extends Application {
         poste3.rotateProperty().set(90);
 
         initMouseControl(grupo, escena, primaryStage);
+
+        primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            switch (event.getCode()){
+                case UP -> camara.translateZProperty().set(camara.getTranslateZ()+50);
+                case DOWN -> camara.translateZProperty().set(camara.getTranslateZ()-50);
+                case LEFT -> camara.translateXProperty().set(camara.getTranslateX()-50);
+                case RIGHT -> camara.translateXProperty().set(camara.getTranslateX()+50);
+            }
+        });
 
         primaryStage.setTitle("Campo de fútbol - Examen de Graficación - Miguel Ángel Reyes Moreno - 17430111");
         primaryStage.setScene(escena);
@@ -150,6 +158,17 @@ public class ExamenGraficacion extends Application {
                     break;
             }
         });
+    }
+
+    private Node[] lightEffect() {
+        PointLight pointLight = new PointLight();
+        pointLight.getTransforms().add(new Translate(100,100,0));
+        pointLight.setColor(Color.GOLD);
+
+        Sphere puntito = new Sphere(3);
+        puntito.getTransforms().setAll(pointLight.getTransforms());
+
+        return new Node[]{pointLight, puntito};
     }
 }
 
