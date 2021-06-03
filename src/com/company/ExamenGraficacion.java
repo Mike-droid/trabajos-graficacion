@@ -3,6 +3,7 @@ package com.company;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Point3D;
 import javafx.scene.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
@@ -13,6 +14,7 @@ import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
@@ -49,6 +51,15 @@ public class ExamenGraficacion extends Application {
         Scene escena = new Scene(grupo, WIDTH, HEIGHT, true);
         escena.setFill(Color.LIGHTBLUE);
         escena.setCamera(camara);
+        camara.translateZProperty().set(-250);
+        //Añadiendo clips para que desaparescan los objetos a cierta distancia
+        camara.setNearClip(1);
+        camara.setFarClip(100);
+
+        //Hacer que rote el balón
+        Transform rotarX = new Rotate(45, new Point3D(1,0,0));
+        Transform rotarY = new Rotate(45, new Point3D(0,1,0));
+        Transform rotarZ = new Rotate(45, new Point3D(0,0,1));
 
         //Moviendo los objetos
         campo.translateXProperty().set(WIDTH/2);
@@ -72,12 +83,46 @@ public class ExamenGraficacion extends Application {
 
         initMouseControl(grupo, escena, primaryStage);
 
+        //Controlando la cámara con las teclas de flecha
         primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             switch (event.getCode()){
-                case UP -> camara.translateZProperty().set(camara.getTranslateZ()+50);
-                case DOWN -> camara.translateZProperty().set(camara.getTranslateZ()-50);
-                case LEFT -> camara.translateXProperty().set(camara.getTranslateX()-50);
-                case RIGHT -> camara.translateXProperty().set(camara.getTranslateX()+50);
+                case T -> {
+                    camara.translateZProperty().set(camara.getTranslateZ()+50);
+                    break;
+                }
+                case G -> {
+                    camara.translateZProperty().set(camara.getTranslateZ()-50);
+                    break;
+                }
+                case F -> {
+                    camara.translateXProperty().set(camara.getTranslateX()-50);
+                    break;
+                }
+                case H -> {
+                    camara.translateXProperty().set(camara.getTranslateX()+50);
+                    break;
+                }
+                case Y -> {
+                    camara.translateYProperty().set(camara.getTranslateY()-50);
+                    break;
+                }
+                case R -> {
+                    camara.translateYProperty().set(camara.getTranslateY()+50);
+                    break;
+                }
+                //Hacer rotar el balón
+                case J -> {
+                    balon.getTransforms().add(rotarX);
+                    break;
+                }
+                case K -> {
+                    balon.getTransforms().add(rotarY);
+                    break;
+                }
+                case L -> {
+                    balon.getTransforms().add(rotarZ);
+                    break;
+                }
             }
         });
 
@@ -111,6 +156,7 @@ public class ExamenGraficacion extends Application {
         return hojas;
     }
 
+    //Método para mover escena con el mouse
     private void initMouseControl(Group grupo, Scene s, Stage stage) {
         Rotate xRotate;
         Rotate yRotate;
@@ -160,6 +206,7 @@ public class ExamenGraficacion extends Application {
         });
     }
 
+    //Creando un punto de luz para la escena
     private Node[] lightEffect() {
         PointLight pointLight = new PointLight();
         pointLight.getTransforms().add(new Translate(100,100,0));

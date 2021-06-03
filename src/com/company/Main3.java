@@ -51,7 +51,7 @@ public class Main3 extends Application {
                     break;
             }
         });
-        primaryStage.setTitle("Ejemplo esfera 3D");
+        primaryStage.setTitle("Ejemplo rotar 3D");
         primaryStage.setScene(s);
         primaryStage.show();
     }
